@@ -68,5 +68,6 @@ namespace Assets.Scripts
             Board.Add(new Property("Park Place", "blue", 350, 35, false, true));
             Board.Add(new Property("Luxury Tax", "none", 0, 0, false, false));
             Board.Add(new Property("Boardwalk", "blue", 400, 50, false, true));
+        }
     }
 }
