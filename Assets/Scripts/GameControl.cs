@@ -16,7 +16,7 @@ public class GameControl : MonoBehaviour
     public static bool gameOver = false;
 
     // Start is called before the first frame update
-    void Start()
+    void Start ()
     {
         whoWinsTextShadow = GameObject.Find("WhoWinsText");
         player1MoveText = GameObject.Find("Player1MoveText");
@@ -34,7 +34,7 @@ public class GameControl : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void Update ()
     {
         if (player1.GetComponent<FollowThePath>().waypointIndex >
             player1StartWaypoint + diceSideThrown)
@@ -58,6 +58,7 @@ public class GameControl : MonoBehaviour
         {
             whoWinsTextShadow.gameObject.SetActive(true);
             whoWinsTextShadow.GetComponent<Text>().text = "Player 1 Wins";
+            gameOver = true;
         }
 
         if (player2.GetComponent<FollowThePath>().waypointIndex ==
