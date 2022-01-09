@@ -180,6 +180,49 @@ namespace Assets.Scripts
             return communityChestDeck;
         }
 
+        public static void ShuffleDeck(List<Cards> deck)
+        {
+            System.Random rand = new System.Random();
+            for (int i = 0; i < deck.Count; i++)
+            {
+                int x = rand.Next(i, deck.Count);
+                Cards temp = deck[i];
+                deck[i] = deck[x];
+                deck[x] = temp;
 
+            }
+        }
+
+        public static void PutCardOnBottomOfDeck(List<Cards> deck, Cards card)
+        {
+            List<Cards> tempDeck = new List<Cards>();
+            for(int i = 0; i < (deck.Count-1); i++)
+            {
+                deck[i] = deck[i + 1];
+            }
+
+            deck[deck.Count] = card;
+        }
+
+        public static void DrawTopCard(List<Cards> deck)
+        {
+            Cards topCard = deck[0];
+            switch(topCard.Action)
+            {
+                case "move":
+                    //do stuff
+                    break;
+                case "pay":
+                    //do stuff
+                    break;
+                case "collect":
+                    //do stuff
+                    break;
+                case "keep":
+                    //do stuff
+                    break;
+            }
+
+        }
     }
 }
