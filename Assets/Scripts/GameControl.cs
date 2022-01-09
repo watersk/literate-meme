@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Assets.Scripts;
 
 public class GameControl : MonoBehaviour
 {
@@ -30,7 +31,7 @@ public class GameControl : MonoBehaviour
 
         whoWinsTextShadow.gameObject.SetActive(false);
         player1MoveText.gameObject.SetActive(true);
-        player2MoveText.gameObject.SetActive(false); ;
+        player2MoveText.gameObject.SetActive(false);
     }
 
     // Update is called once per frame

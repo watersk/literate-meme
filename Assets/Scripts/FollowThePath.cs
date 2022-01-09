@@ -12,6 +12,7 @@ public class FollowThePath : MonoBehaviour
 
     [HideInInspector]
     public int waypointIndex = 0;
+    List<Property> board = Property.CreateBoard();
 
     public bool moveAllowed = false;
 
@@ -19,14 +20,14 @@ public class FollowThePath : MonoBehaviour
     private void Start ()
     {
         transform.position = waypoints[waypointIndex].transform.position;
-        string startingLocation = Assets.Scripts.Property.getLocation(waypointIndex);
-        Debug.Log("starting location: " + startingLocation);
+        //string startingLocation = Assets.Scripts.Property.getLocation(waypointIndex).Name;
+        //Debug.Log("starting location: " + startingLocation);
     }
 
     // Update is called once per frame
     private void Update()
     {
-        if(moveAllowed)
+        if (moveAllowed)
         {
             Move();
         }
@@ -39,9 +40,6 @@ public class FollowThePath : MonoBehaviour
             transform.position = Vector2.MoveTowards(transform.position,
                 waypoints[waypointIndex].transform.position,
                 moveSpeed * Time.deltaTime);
-
-            string updatedLocation = Assets.Scripts.Property.getLocation(waypointIndex);
-            Debug.Log("updated location: " + updatedLocation);
 
             if (transform.position == waypoints[waypointIndex].transform.position)
             {

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts;
 using UnityEngine;
 
 public class Dice : MonoBehaviour
@@ -12,6 +13,11 @@ public class Dice : MonoBehaviour
     private bool coroutineAllowed = true;
     public static bool isDoubles = false;
     public static int doublesCounter = 0;
+
+    internal static Player Player1 { get; set; } = Player.CreatePlayer();
+    internal static Player Player2 { get; set; } = Player.CreatePlayer();
+
+    List<Property> board = Property.CreateBoard();
 
     // Start is called before the first frame update
     private void Start()
@@ -55,18 +61,18 @@ public class Dice : MonoBehaviour
             if(x == 0)
             {
                 firstRoll = StoreRoll(rolledValue);
-                Debug.Log("First roll: " + firstRoll);
             }
             else
             {
                 secondRoll = StoreRoll(rolledValue);
-                Debug.Log("Second roll: " + secondRoll);
             }
-            Debug.Log("rolled a " + rolledValue);
             totalRoll = totalRoll + rolledValue;
-            Debug.Log("in total: " + totalRoll);
             randomDiceSide1 = 0;
         }
+
+        Debug.Log("First roll: " + firstRoll);
+        Debug.Log("Second roll: " + secondRoll);
+        Debug.Log("in total: " + totalRoll);
 
         if (firstRoll == secondRoll)
         {
@@ -78,12 +84,33 @@ public class Dice : MonoBehaviour
         isDoubles = false;
 
         GameControl.diceSideThrown = totalRoll;
+
+        List<Property> board = Property.CreateBoard();
+
         if (whosTurn == 1)
         {
             GameControl.MovePlayer(1);
+            Player.PurchaseProperty(
+                Player1, 
+                board[board.FindIndex(p => p.Name.Equals(Player1.CurrentLocation.Name)) + totalRoll]);
+            Debug.Log("Money after purchase: " + Player1.Money);
+            Debug.Log("Player 1 is currently on: " + Player1.CurrentLocation.Name);
+            foreach(var prop in Player1.OwnedProperties)
+            {
+                Debug.Log("Player 1 owns: " + prop.Name);
+            }
         } else if (whosTurn == -1)
         {
             GameControl.MovePlayer(2);
+            Player.PurchaseProperty(
+                Player2,
+                board[board.FindIndex(p => p.Name.Equals(Player2.CurrentLocation.Name)) + totalRoll]);
+            Debug.Log("Money after purchase: " + Player2.Money);
+            Debug.Log("Player 2 is currently on: " + Player2.CurrentLocation.Name);
+            foreach (var prop in Player2.OwnedProperties)
+            {
+                Debug.Log("Player 2 owns: " + prop.Name);
+            }
         }
         whosTurn *= -1;
         isDoubles = false;
