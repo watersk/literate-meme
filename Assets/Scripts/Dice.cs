@@ -17,7 +17,7 @@ public class Dice : MonoBehaviour
     internal static Player Player1 { get; set; } = Player.CreatePlayer();
     internal static Player Player2 { get; set; } = Player.CreatePlayer();
 
-    List<Property> board = Property.CreateBoard();
+    public static List<Property> board = Property.CreateBoard();
 
     // Start is called before the first frame update
     private void Start()
@@ -42,6 +42,7 @@ public class Dice : MonoBehaviour
 
     private IEnumerator RollTheDice()
     {
+        List<Player> players = new List<Player> { Player1, Player2 };
         coroutineAllowed = false;
         int randomDiceSide1 = 0;
         int firstRoll = 0;
@@ -89,28 +90,26 @@ public class Dice : MonoBehaviour
 
         if (whosTurn == 1)
         {
+            players[0] = Player1;
             GameControl.MovePlayer(1);
             Player.PurchaseProperty(
+                players,
                 Player1, 
                 board[board.FindIndex(p => p.Name.Equals(Player1.CurrentLocation.Name)) + totalRoll]);
             Debug.Log("Money after purchase: " + Player1.Money);
             Debug.Log("Player 1 is currently on: " + Player1.CurrentLocation.Name);
-            foreach(var prop in Player1.OwnedProperties)
-            {
-                Debug.Log("Player 1 owns: " + prop.Name);
-            }
+            Player.PrintOwnedProps(players, Player1);
         } else if (whosTurn == -1)
         {
+            players[1] = Player2;
             GameControl.MovePlayer(2);
             Player.PurchaseProperty(
+                players,
                 Player2,
-                board[board.FindIndex(p => p.Name.Equals(Player2.CurrentLocation.Name)) + totalRoll]);
+                board[board.FindIndex(s => s.Name.Equals(Player2.CurrentLocation.Name)) + totalRoll]);
             Debug.Log("Money after purchase: " + Player2.Money);
             Debug.Log("Player 2 is currently on: " + Player2.CurrentLocation.Name);
-            foreach (var prop in Player2.OwnedProperties)
-            {
-                Debug.Log("Player 2 owns: " + prop.Name);
-            }
+            Player.PrintOwnedProps(players, Player2);
         }
         whosTurn *= -1;
         isDoubles = false;

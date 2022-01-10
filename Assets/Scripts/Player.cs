@@ -32,15 +32,24 @@ namespace Assets.Scripts
             return new Player(1500, board[0], ownedProps, keptCards);
         }
 
+        public static void PrintOwnedProps(List<Player> players, Player desiredPlayer)
+        {
+            int index = players.IndexOf(desiredPlayer);
+            foreach(var property in desiredPlayer.OwnedProperties)
+            {
+                Debug.Log("Player" + (index + 1) + " owns: " + property.Name);
+            }
+        }
+
         public static void UpdateMoney(Player player, int amount, string updateType)
         {
             switch(updateType)
             {
                 case "pay":
-                    player.Money = (player.Money - amount);
+                    player.Money -= amount;
                     break;
                 case "collect":
-                    player.Money = (player.Money + amount);
+                    player.Money += amount;
                     break;
             }
         }
@@ -62,32 +71,65 @@ namespace Assets.Scripts
             player.KeptCards.Add(card);
         }
 
-        public static void Rent(Player landlord, Player tenant, Property propLanded)
+        public static Player DetermineLandlord(List<Player> players, Player currentPlayer, Property propInQuestion)
         {
-            int rent = propLanded.Rent;
-
-            if(propLanded.IsMonopoly)
+            Player playerToReturn = currentPlayer;
+            
+            for(int x = 0; x < players.Count; x++)
             {
-                rent = rent * 2;
+                Debug.Log("Player" + (x + 1) + "owns: ");
+                for (int i = 0; i < players[x].OwnedProperties.Count; i++)
+                {
+                    Debug.Log(players[x].OwnedProperties[i].Name);
+                    if (players[x].OwnedProperties[i].Equals(propInQuestion))
+                    {
+                        playerToReturn = players[x];
+                    }
+                }
+                
             }
-
-            UpdateMoney(landlord, rent, "collect");
-            UpdateMoney(tenant, rent, "pay");
+            return playerToReturn;
         }
 
-        public static void PurchaseProperty(Player player, Property propToBeBought)
+        public static void Rent(List<Player> players, Player currentPlayer, Property propLanded)
+        {
+            int rent = propLanded.Rent;
+            Player landlord = DetermineLandlord(players, currentPlayer, propLanded);
+
+            if(!landlord.Equals(currentPlayer))
+            {
+                if (propLanded.IsMonopoly)
+                {
+                    rent = rent * 2;
+                }
+
+                UpdateMoney(landlord, rent, "collect");
+                UpdateMoney(currentPlayer, rent, "pay");
+
+                Debug.Log("Landlord gained: $" + rent + " and now has " + landlord.Money);
+                Debug.Log("Current player lost: $" + rent + " and now has " + currentPlayer.Money);
+            }
+        }
+
+        public static void PurchaseProperty(List<Player> players, Player currentPlayer, Property propToBeBought)
         {
             if (!propToBeBought.IsOwned && propToBeBought.CanBeBought)
             {
                 Debug.Log("Property: " + propToBeBought.Name);
                 Debug.Log("Cost: " + propToBeBought.Cost);
-                UpdateMoney(player, propToBeBought.Cost, "pay");
-                UpdatePropertyList(player, propToBeBought);
-                UpdatePlayerLocation(player, propToBeBought);
+                UpdateMoney(currentPlayer, propToBeBought.Cost, "pay");
+                UpdatePropertyList(currentPlayer, propToBeBought);
+                UpdatePlayerLocation(currentPlayer, propToBeBought);
+            }
+            else if (propToBeBought.IsOwned)
+            {
+                Rent(players, currentPlayer, propToBeBought);
             }
             else
             {
-                Debug.Log("Cannot purchase " + propToBeBought.Name);
+                Debug.Log("Cannot purchase " + propToBeBought.Name + 
+                    " because its CanBeBought value is: " + 
+                    propToBeBought.CanBeBought);
             }
         }
     }
